@@ -1,0 +1,4 @@
+module.exports = {
+    INITIAL_BUDGET: 1_000_000,
+    POTENTIAL_RISK_PERCENT: 15
+};

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.014" tests="5" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-12-18T11:44:43" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="MovieStudio" timestamp="2025-12-18T11:44:43" tests="5" file="C:\Users\Gaurav_Jha\Downloads\cca-final-task-js\tests\MovieStudioTest.spec.js" time="0.013" failures="0">
+    <testcase name="MovieStudio should create movie Titanic with valid movie definition" time="0.006" classname="should create movie Titanic with valid movie definition">
+    </testcase>
+    <testcase name="MovieStudio should create movie StarWars with valid movie definition" time="0.003" classname="should create movie StarWars with valid movie definition">
+    </testcase>
+    <testcase name="MovieStudio should create Empty Movie with Empty movie definition" time="0.000" classname="should create Empty Movie with Empty movie definition">
+    </testcase>
+    <testcase name="MovieStudio should fail create movie when budget exceeds" time="0.001" classname="should fail create movie when budget exceeds">
+    </testcase>
+    <testcase name="MovieStudio should throw InsufficientBudgetException when Insufficient Budget" time="0.001" classname="should throw InsufficientBudgetException when Insufficient Budget">
+    </testcase>
+  </testsuite>
+</testsuites>

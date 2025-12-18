@@ -1,12 +1,8 @@
 module.exports = class StudioEmployee {
-    constructor(name, initialSalary) {
+    constructor(name, salary) {
         this.name = name;
-        this.salary = initialSalary;
-        this.earnedMoney = 0; // total amount of earned money
-    }
-
-    getEarnedMoney() {
-        return this.earnedMoney;
+        this.salary = salary;
+        this.earnedMoney = 0;
     }
 
     getName() {
@@ -17,7 +13,11 @@ module.exports = class StudioEmployee {
         return this.salary;
     }
 
-    paySalary(paidSum) {
-        this.earnedMoney += paidSum;
+    getEarnedMoney() {
+        return this.earnedMoney;
     }
-}
+
+    paySalary(amount) {
+        this.earnedMoney += amount;
+    }
+};

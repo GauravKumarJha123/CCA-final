@@ -1,5 +1,7 @@
 const Salaries = require('../thirdparty/Salaries');
 const StudioEmployee = require('./profile/StudioEmployee');
+const PerformingStaff = require('./PerformingStaff');
+
 
 module.exports = class Actor extends StudioEmployee {
     constructor(name, isSuperStar) {
@@ -7,7 +9,7 @@ module.exports = class Actor extends StudioEmployee {
         this.isSuperStar = isSuperStar;
     }
 
-    pay(person, financialService) {}
+    //pay(person, financialService) {}
 
     // returns true if this actor plays nicely and there is no need to repeat the scene again
     act() {
@@ -21,7 +23,7 @@ module.exports = class Actor extends StudioEmployee {
         return true;
     }
 
-    hire(name, personType) {
-        return null;
-    }
+    // hire(name, personType) {
+    //     return null;
+    // }
 }

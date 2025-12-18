@@ -1,12 +1,14 @@
 const Salaries = require('../thirdparty/Salaries');
 const StudioEmployee = require('./profile/StudioEmployee');
+const PerformingStaff = require('./PerformingStaff');
+
 
 module.exports = class CameraMan extends StudioEmployee {
     constructor(name) {
         super(name, Salaries.CAMERA_MAN);
     }
 
-    pay(person, financialService) {}
+    //pay(person, financialService) {}
 
     act() {
         return true;
@@ -17,7 +19,7 @@ module.exports = class CameraMan extends StudioEmployee {
         return parseFloat(Math.random().toFixed(2)) > 0.04;
     }
 
-    hire(name, personType) {
-        return null;
-    }
+    // hire(name, personType) {
+    //     return null;
+    // }
 }

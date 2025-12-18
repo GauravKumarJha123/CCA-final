@@ -21,8 +21,7 @@ module.exports = class ProducingService {
             }
             return this.getArchiveStatistics();
         } catch (e) {
-            console.log('Movie archive is damaged or empty');
-            return new MovieStatistics([]);
+            return new MovieStatistics();
         }
     }
 
@@ -58,11 +57,17 @@ module.exports = class ProducingService {
 
     // returns true if producing day is a success
     lightsCameraAction(staffingService) {
-        const staff = staffingService.getStaff();
-        return staff.filter(person => person instanceof Actor || person instanceof CameraMan)
-            .map(person => person.act() && person.shoot())
-            .reduce((crewSuccess, crewAction) => crewSuccess && crewAction, true);
+    const staff = staffingService.getStaff();
+    const actorsSuccessful = staff
+        .filter(person => person instanceof Actor)
+        .every(actor => actor.act());
+    const cameramenSuccessful = staff
+        .filter(person => person instanceof CameraMan)
+        .every(cameraman => cameraman.shoot());
+
+    return actorsSuccessful && cameramenSuccessful;
     }
+
 
     getProgress() {
         return this.productionSchedule.getDaysSpentOnProduction();

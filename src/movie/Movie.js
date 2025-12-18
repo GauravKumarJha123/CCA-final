@@ -49,4 +49,9 @@ module.exports = class Movie {
     toString() {
         return `Movie ${this.name} [${this.genre}], status: ${this.isFinished ? 'finished' : 'in production'}, days in production: ${this.daysInProduction}`;
     }
+
+    fail() {
+    this.isFinished = false;
+    }
+
 }

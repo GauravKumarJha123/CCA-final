@@ -7,7 +7,7 @@ module.exports = class MovieStatistics {
     }
 
     isEmpty() {
-        return this.totalActors + this.totalCameramen + this.superstars.length > 0;
+        return this.totalActors + this.totalCameramen + this.superstars.length === 0;
     }
 
     getGenres() {
