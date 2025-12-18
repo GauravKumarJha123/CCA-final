@@ -26,17 +26,19 @@ module.exports = class ProducingService {
     }
 
     getArchiveStatistics() {
-        const movieStatistics = new MovieStatistics(this.movieArchive);
+    const movieStatistics = new MovieStatistics();
 
-        console.log(`Movies in archive: ${this.movieArchive.length}`);
-        this.movieArchive.forEach(movie => {
-            const currentMovieGenre = movie.getGenre();
-            movieStatistics.getGenres()[currentMovieGenre] = movieStatistics.getGenres()[currentMovieGenre] || 1;
-            movieStatistics.incActorsCount(movie.getCrew()['Actor']);
-            movieStatistics.incCameramenCount(movie.getCrew()['Cameraman']);
-            movieStatistics.addSuperStars(movie.getSuperstars());
-        });
-        return movieStatistics;
+    console.log(`Movies in archive: ${this.movieArchive.length}`);
+    this.movieArchive.forEach(movie => {
+        const currentMovieGenre = movie.getGenre();
+        // FIX: Increment instead of setting to 1
+        movieStatistics.getGenres()[currentMovieGenre] = 
+            (movieStatistics.getGenres()[currentMovieGenre] || 0) + 1;
+        movieStatistics.incActorsCount(movie.getCrew()['Actor']);
+        movieStatistics.incCameramenCount(movie.getCrew()['Cameraman']);
+        movieStatistics.addSuperStars(movie.getSuperstars());
+    });
+    return movieStatistics;
     }
 
     addMovieToArchive(movie) {
@@ -71,5 +73,24 @@ module.exports = class ProducingService {
 
     getProgress() {
         return this.productionSchedule.getDaysSpentOnProduction();
+    }
+    lightsCameraAction(staffingService) {
+    const staff = staffingService.getStaff();
+    const performingStaff = staff.filter(person => 
+        person.canPerform && person.canPerform()
+    );
+    
+    if (performingStaff.length === 0) {
+        return true;
+    }
+
+    const actorsSuccessful = performingStaff.every(person => 
+        !person.act || person.act()
+    );
+    const cameramenSuccessful = performingStaff.every(person => 
+        !person.shoot || person.shoot()
+    );
+
+    return actorsSuccessful && cameramenSuccessful;
     }
 }

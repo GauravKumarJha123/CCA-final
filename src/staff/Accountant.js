@@ -1,12 +1,14 @@
 const Salaries = require('../thirdparty/Salaries');
 const BudgetIsOverException = require('../thirdparty/BudgetIsOverException');
 const StudioEmployee = require('./profile/StudioEmployee');
-const AdministrativeStaff = require('./AdministrativeStaff');
-
 
 module.exports = class Accountant extends StudioEmployee {
     constructor(name) {
         super(name, Salaries.ACCOUNTANT);
+    }
+
+    canManageFinances() {
+        return true;
     }
 
     pay(person, financialService) {
@@ -18,16 +20,4 @@ module.exports = class Accountant extends StudioEmployee {
         }
         financialService.decreaseBudget(salary);
     }
-
-    // act() {
-    //     return false;
-    // }
-
-    // shoot() {
-    //     return false;
-    // }
-
-    // hire(name, personType) {
-    //     return null;
-    // }
 }

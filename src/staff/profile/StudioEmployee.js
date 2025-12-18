@@ -20,4 +20,17 @@ module.exports = class StudioEmployee {
     paySalary(amount) {
         this.earnedMoney += amount;
     }
-};
+
+    // Query methods - optional capabilities
+    canPerform() {
+        return false;
+    }
+
+    canManageFinances() {
+        return false;
+    }
+
+    canHireStaff() {
+        return false;
+    }
+}

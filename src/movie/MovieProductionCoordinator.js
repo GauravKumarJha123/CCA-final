@@ -1,4 +1,9 @@
 const InsufficientBudgetException = require('../thirdparty/InsufficientBudgetException');
+const BudgetInitializer = require('./BudgetInitializer');
+const StaffHiringManager = require('./StaffHiringManager');
+const FeasibilityChecker = require('./FeasibilityChecker');
+const ProductionRunner = require('./ProductionRunner');
+const MovieFinalizer = require('./MovieFinalizer');
 
 module.exports = class MovieProductionCoordinator {
     constructor({
@@ -8,91 +13,42 @@ module.exports = class MovieProductionCoordinator {
         reportService,
         studioConfig
     }) {
-        this.financeService = financeService;
-        this.staffingService = staffingService;
-        this.producingService = producingService;
-        this.reportService = reportService;
-        this.config = studioConfig;
+        this.budgetInitializer = new BudgetInitializer(financeService, studioConfig);
+        this.staffHiringManager = new StaffHiringManager(staffingService);
+        this.feasibilityChecker = new FeasibilityChecker(financeService, staffingService, studioConfig);
+        this.productionRunner = new ProductionRunner(producingService, financeService, staffingService);
+        this.movieFinalizer = new MovieFinalizer(reportService, producingService, financeService, staffingService);
     }
 
     createMovie(recruiter, accountant, movieDefinition, movie) {
-        // 1. Init budget
-        const initialBudget =
-            this.config.INITIAL_BUDGET + movieDefinition.getBudget();
+        // 1. Initialize budget
+        this.budgetInitializer.initializeBudget(movieDefinition.getBudget());
 
-        this.financeService.initBudget(initialBudget);
+        // 2. Hire initial staff
+        this.staffHiringManager.hireInitialStaff(recruiter, accountant);
 
-        // 2. Hire studio staff
-        this.staffingService.hireNewStaff(recruiter, accountant);
-
-        // 3. Feasibility check (FAIL FAST)
-        if (!this.canBeProduced(movieDefinition)) {
+        // 3. Check feasibility
+        if (!this.feasibilityChecker.canBeProduced(movieDefinition)) {
             throw new InsufficientBudgetException(
                 'Movie cannot be produced - budget is insufficient'
             );
         }
 
-        // 4. Hire movie staff
-        this.staffingService.hireMDStaff(movieDefinition.getMovieStaff());
+        // 4. Hire movie production staff
+        this.staffHiringManager.hireMovieStaff(movieDefinition.getMovieStaff());
 
-        // 5. Start production
-        this.producingService.initMovieProduction(
-            movieDefinition.getProductionScheduleDaysCount()
-        );
+        // 5. Run production
+        const success = this.productionRunner.runProduction(movie, movieDefinition);
 
-        while (this.producingService.hasNextWorkingDay()) {
-            if (this.producingService.lightsCameraAction(this.staffingService)) {
-                this.producingService.progress();
-            }
-
-            movie.updateContent();
-
-            try {
-                this.financeService.paySalary(this.staffingService);
-            } catch (e) {
-                movie.fail();
-                return movie;
-            }
+        // 6. Finalize movie
+        if (success) {
+            this.movieFinalizer.finalizeMovie(
+                movie, 
+                movieDefinition, 
+                this.budgetInitializer.getInitialBudget()
+            );
         }
-
-        // 6. Success path
-        movie.success();
-
-        // 7. Reporting + archive
-        this.reportService.printProducedMovieStatistics(
-            movieDefinition,
-            this.staffingService,
-            this.financeService.getBudget(),
-            initialBudget
-        );
-
-        this.producingService.addMovieToArchive(movie);
 
         return movie;
     }
-
-    canBeProduced(movieDefinition) {
-        const estimatedCost = this.estimateProductionCost(movieDefinition);
-        return this.financeService.getBudget() >= estimatedCost;
-    }
-
-    estimateProductionCost(movieDefinition) {
-        const days = movieDefinition.getProductionScheduleDaysCount();
-        const riskFactor = 1 + this.config.POTENTIAL_RISK_PERCENT / 100;
-
-        const staff = this.staffingService.getStaff();
-        const studioDailyCost = staff.reduce(
-            (sum, p) => sum + p.getSalary(),
-            0
-        );
-
-        const movieStaff = movieDefinition.getMovieStaff();
-        const Salaries = require('../thirdparty/Salaries');
-
-        const movieDailyCost =
-            movieStaff.getActorsCollection().length * Salaries.ACTOR +
-            movieStaff.getCameramanCollection().length * Salaries.CAMERA_MAN;
-
-        return (studioDailyCost + movieDailyCost) * days * riskFactor;
-    }
-};
+}

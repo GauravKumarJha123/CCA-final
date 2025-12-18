@@ -1,34 +1,21 @@
 const Salaries = require('../thirdparty/Salaries');
 const StudioEmployee = require('./profile/StudioEmployee');
-const Accountant = require('./Accountant');
-const CameraMan = require('./CameraMan');
-const Actor = require('./Actor');
-const NoSuchProfession = require('../thirdparty/NoSuchProfession');
-const AdministrativeStaff = require('./AdministrativeStaff');
-const staffRegistry = require('./StaffRegistry');
-
+const StaffRegistry = require('./StaffRegistry');
 
 module.exports = class Recruiter extends StudioEmployee {
-    constructor(name, staffFactory) {
-    super(name, Salaries.RECRUITER);
-    this.staffFactory = staffFactory;
+    constructor(name) {
+        super(name, Salaries.RECRUITER);
     }
 
-    // pay(person, financialService) {}
-
-    // act() {
-    //     return false;
-    // }
-
-    // shoot() {
-    //     return false;
-    // }
+    canHireStaff() {
+        return true;
+    }
 
     hire(name, personType) {
-    const creator = StaffRegistry[personType.toLowerCase()];
-    if (!creator) {
-        throw new Error(`No such profession: ${personType}`);
-    }
-    return creator(name);
+        const creator = StaffRegistry[personType.toLowerCase()];
+        if (!creator) {
+            throw new Error(`No such profession: ${personType}`);
+        }
+        return creator(name);
     }
 }
