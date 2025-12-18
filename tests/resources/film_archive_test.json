@@ -1,0 +1,11 @@
+[{
+    "name": "Titanic",
+    "genre": "DRAMA",
+    "daysInProduction": 160,
+    "crew": {
+        "Actor": 52,
+        "Cameraman": 13,
+        "Lawyer": 4
+    },
+    "superstars": ["Leonardo di Caprio", "Kate Winslet", "Billy Zane", "Bernard Hill"]
+}]

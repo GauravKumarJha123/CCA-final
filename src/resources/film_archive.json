@@ -1,0 +1,11 @@
+[{
+    "name": "Terminator",
+    "genre": "ACTION",
+    "daysInProduction": 160,
+    "crew": {
+        "Actor": 49,
+        "Cameraman": 8,
+        "Lawyer": 3
+    },
+    "superstars": ["Arnold Schwarzenegger", "Linda Hamilton"]
+}]
